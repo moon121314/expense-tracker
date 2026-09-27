@@ -22,6 +22,24 @@ def create_expense(expense: ExpenseCreate):
     return new
 
 
+@router.get("/db", response_model=list[ExpenseResponse])
+def db_expenses():
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute("SELECT id, amount, category FROM expenses")
+        rows = cur.fetchall()
+        cur.close()
+        conn.close()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return [
+        {"id": r[0], "amount": float(r[1]), "category": r[2]}
+        for r in rows
+    ]
+
+
 @router.get("/{expense_id}", response_model=ExpenseResponse)
 def get_expense(expense_id: int):
     for e in _expenses:
@@ -39,19 +57,3 @@ def delete_expense(expense_id: int):
         raise HTTPException(status_code=404, detail="Expense not found")
 
 
-@router.get("/db", response_model=list[ExpenseResponse])
-def db_expenses():
-    try:
-        conn = get_db()
-        cur = conn.cursor()
-        cur.execute("SELECT id, amount, category FROM expenses")
-        rows = cur.fetchall()
-        cur.close()
-        conn.close()
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-    return [
-        {"id": r[0], "amount": float(r[1]), "category": r[2]}
-        for r in rows
-    ]
