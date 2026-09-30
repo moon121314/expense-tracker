@@ -1,11 +1,25 @@
-import psycopg2
+from sqlalchemy import create_engine
+from sqlalchemy.orm import declarative_base, sessionmaker
+
+
+DATABASE_URL = "postgresql://moon:moon123@localhost:5432/learning_db"
+
+engine = create_engine(DATABASE_URL)
+
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine
+)
+
+Base = declarative_base()
 
 
 def get_db():
-    """Return a new connection to the learning_db database."""
-    return psycopg2.connect(
-        dbname="learning_db",
-        user="moon",
-        password="moon123",
-        host="localhost",
-    )
+    """Yield a database session for a request."""
+    db = SessionLocal()
+
+    try:
+        yield db
+    finally:
+        db.close()
