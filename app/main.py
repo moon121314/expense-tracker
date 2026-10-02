@@ -1,7 +1,6 @@
 from fastapi import FastAPI
-from app import models
-from app.routers import expenses
-from app.routers import auth
+
+from app.routers import auth, expenses
 
 app = FastAPI(title="Expense Tracker API", version="1.0.0")
 app.include_router(expenses.router)
