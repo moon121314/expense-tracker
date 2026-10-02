@@ -42,7 +42,7 @@ The API allows users to register, authenticate securely, and manage their person
 | JWT | Authentication |
 | pytest | Testing |
 | Docker | Containerization |
-| GitHub Actions | CI |
+| GitHub Actions | Continuous Integration |
 | Uvicorn | ASGI server |
 
 ---
