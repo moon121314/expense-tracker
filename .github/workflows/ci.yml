@@ -44,4 +44,9 @@ jobs:
         env:
           DATABASE_URL: postgresql://moon:moon123@localhost:5432/test_db
         run: |
-          pytest -v --cov=app --cov-report=term-missing
+          pytest -v tests --cov=app --cov-report=term-missing
+
+      - name: Lint with ruff
+        run: |
+          pip install ruff
+          ruff check app/
