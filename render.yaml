@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: expense-tracker-api
+    runtime: docker
+    plan: free
+    region: oregon
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+    healthCheckPath: /health
