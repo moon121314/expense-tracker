@@ -1,6 +1,6 @@
 # 💰 Expense Tracker API
 
-![CI](https://github.com/moon121314/expense-tracker/actions/workflows/ci.yml/badge.svg)
+[![CI](https://github.com/moon121314/expense-tracker/actions/workflows/ci.yml/badge.svg)](https://github.com/moon121314/expense-tracker/actions/workflows/ci.yml)
 
 A production-style **Expense Tracker REST API** built with **FastAPI, PostgreSQL, SQLAlchemy, Alembic, JWT authentication, Docker, and pytest**.
 
