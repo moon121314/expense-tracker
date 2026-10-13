@@ -1,13 +1,13 @@
 """Expense endpoints."""
+
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from app.core.deps import get_current_user
 from app.database import get_db
 from app.models.user import User
-from app.schemas.expense import ExpenseCreate, ExpenseUpdate, ExpenseResponse
+from app.schemas.expense import ExpenseCreate, ExpenseResponse, ExpenseUpdate
 from app.services import expense_service
-
 
 router = APIRouter(prefix="/expenses", tags=["expenses"])
 
@@ -55,9 +55,7 @@ def update_expense(
     current_user: User = Depends(get_current_user),
 ):
     """Update an expense."""
-    return expense_service.update_user_expense(
-        db, current_user, expense_id, updates_in
-    )
+    return expense_service.update_user_expense(db, current_user, expense_id, updates_in)
 
 
 @router.delete("/{expense_id}", status_code=204)
