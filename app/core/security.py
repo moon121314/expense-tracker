@@ -3,11 +3,13 @@ from datetime import UTC, datetime, timedelta
 from jose import JWTError, jwt
 from pwdlib import PasswordHash
 
-SECRET_KEY = "change-this-in-production-use-env-vars"
+from app.core.config import settings
 
-ALGORITHM = "HS256"
+SECRET_KEY = settings.secret_key
 
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ALGORITHM = settings.algorithm
+
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_mintures
 
 
 password_hash = PasswordHash.recommended()
