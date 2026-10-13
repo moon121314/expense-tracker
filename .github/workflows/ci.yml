@@ -42,7 +42,7 @@ jobs:
 
       - name: Run tests
         env:
-          DATABASE_URL: postgresql://moon:moon123@localhost:5432/test_db
+          DATABASE_URL: postgresql+psycopg2://moon:moon123@localhost:5432/test_db
         run: |
           pytest -v tests --cov=app --cov-report=term-missing
 
