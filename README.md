@@ -1,4 +1,4 @@
-# 💰 Expense Tracker API
+# Expense Tracker API
 
 ![CI](https://github.com/moon121314/expense-tracker/actions/workflows/ci.yml/badge.svg)
 
@@ -8,7 +8,7 @@ The API allows users to register, authenticate securely, and manage their person
 
 ---
 
-## 🚀 Features
+## Features
 
 - 🔐 User registration and authentication
 - 🔑 JWT-based authentication
@@ -29,7 +29,7 @@ The API allows users to register, authenticate securely, and manage their person
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Technology | Purpose |
 |---|---|
@@ -47,7 +47,7 @@ The API allows users to register, authenticate securely, and manage their person
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```text
 expense-tracker/
