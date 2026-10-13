@@ -16,11 +16,11 @@ def list_user_expenses(
         user:User,
         skip: int = 0,
         limit: int = 10,
-        mint_amount: float | None = None,
+        min_amount: float | None = None,
         category: str | None = None,
 ) -> list[Expense]:
     """Return a user's expenses"""
-    return expense_crud.list_for_user(db,user_id=user.id,skip=skip, limit=limit, min_amount=mint_amount,category=category,)
+    return expense_crud.list_for_user(db,user_id=user.id,skip=skip, limit=limit, min_amount=min_amount,category=category,)
 
 def get_user_expense(db: Session, user: User, expense_id: int) -> Expense:
     """Return an expense belonging to the user, or raise 404."""

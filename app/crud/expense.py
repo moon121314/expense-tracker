@@ -38,5 +38,3 @@ def delete(db: Session, expense:Expense) -> None:
     """Delete an expense"""
     db.delete(expense)
     db.commit()
-    
-        
