@@ -22,4 +22,6 @@ env/
 .DS_Store
 
 # Docker (optional)
-# docker-compose.override.yml
+# docker-compose.override.yml__pycache__/
+*.pyc
+*.pyo

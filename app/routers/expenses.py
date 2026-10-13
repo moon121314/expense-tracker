@@ -1,4 +1,5 @@
 """Expense endpoints."""
+
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query
@@ -59,9 +60,7 @@ def update_expense(
     current_user: CurrentUser,
 ):
     """Update an expense."""
-    return expense_service.update_user_expense(
-        db, current_user, expense_id, updates_in
-    )
+    return expense_service.update_user_expense(db, current_user, expense_id, updates_in)
 
 
 @router.delete("/{expense_id}", status_code=204)
