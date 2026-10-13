@@ -43,6 +43,10 @@ jobs:
       - name: Run tests
         env:
           DATABASE_URL: postgresql+psycopg2://moon:moon123@localhost:5432/test_db
+          SECRET_KEY: ci-test-secret-key-not-for-production
+          ACCESS_TOKEN_EXPIRE_MINUTES: 30
+          LOG_LEVEL: INFO
+          ENVIRONMENT: test
         run: |
           pytest -v tests --cov=app --cov-report=term-missing
 
