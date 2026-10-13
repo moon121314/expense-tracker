@@ -1,142 +1,70 @@
-from typing import Annotated
-
-from fastapi import APIRouter, Depends, HTTPException, Query
+"""Expense endpoints."""
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from app.core.deps import get_current_user
 from app.database import get_db
-from app.models.expense import Expense
 from app.models.user import User
-from app.schemas.expense import (
-    ExpenseCreate,
-    ExpenseResponse,
-    ExpenseUpdate,
-)
+from app.schemas.expense import ExpenseCreate, ExpenseUpdate, ExpenseResponse
+from app.services import expense_service
+
 
 router = APIRouter(prefix="/expenses", tags=["expenses"])
-
-DbSession = Annotated[Session, Depends(get_db)]
-CurrentUser = Annotated[User, Depends(get_current_user)]
 
 
 @router.post("/", response_model=ExpenseResponse, status_code=201)
 def create_expense(
-    expense: ExpenseCreate,
-    db: DbSession,
-    current_user: CurrentUser,
+    expense_in: ExpenseCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
-    new_expense = Expense(
-        amount=expense.amount,
-        category=expense.category,
-        user_id=current_user.id,
-    )
-
-    db.add(new_expense)
-    db.commit()
-    db.refresh(new_expense)
-
-    return new_expense
+    """Create a new expense for the current user."""
+    return expense_service.create_user_expense(db, current_user, expense_in)
 
 
 @router.get("/", response_model=list[ExpenseResponse])
 def list_expenses(
-    db: DbSession,
-    current_user: CurrentUser,
-    skip: Annotated[int, Query(ge=0)] = 0,
-    limit: Annotated[int, Query(ge=1, le=100)] = 10,
+    skip: int = Query(0, ge=0),
+    limit: int = Query(10, ge=1, le=100),
     min_amount: float | None = None,
     category: str | None = None,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
-    query = db.query(Expense).filter(
-        Expense.user_id == current_user.id
+    """List the current user's expenses."""
+    return expense_service.list_user_expenses(
+        db, current_user, skip, limit, min_amount, category
     )
-
-    if min_amount is not None:
-        query = query.filter(Expense.amount >= min_amount)
-
-    if category is not None:
-        query = query.filter(Expense.category == category)
-
-    return query.offset(skip).limit(limit).all()
 
 
 @router.get("/{expense_id}", response_model=ExpenseResponse)
 def get_expense(
     expense_id: int,
-    db: DbSession,
-    current_user: CurrentUser,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
-    expense = (
-        db.query(Expense)
-        .filter(
-            Expense.id == expense_id,
-            Expense.user_id == current_user.id,
-        )
-        .first()
-    )
-
-    if expense is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Expense not found",
-        )
-
-    return expense
+    """Return a single expense."""
+    return expense_service.get_user_expense(db, current_user, expense_id)
 
 
 @router.put("/{expense_id}", response_model=ExpenseResponse)
 def update_expense(
     expense_id: int,
-    expense: ExpenseUpdate,
-    db: DbSession,
-    current_user: CurrentUser,
+    updates_in: ExpenseUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
-    existing_expense = (
-        db.query(Expense)
-        .filter(
-            Expense.id == expense_id,
-            Expense.user_id == current_user.id,
-        )
-        .first()
+    """Update an expense."""
+    return expense_service.update_user_expense(
+        db, current_user, expense_id, updates_in
     )
-
-    if existing_expense is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Expense not found",
-        )
-
-    updates = expense.model_dump(exclude_unset=True)
-
-    for field, value in updates.items():
-        setattr(existing_expense, field, value)
-
-    db.commit()
-    db.refresh(existing_expense)
-
-    return existing_expense
 
 
 @router.delete("/{expense_id}", status_code=204)
 def delete_expense(
     expense_id: int,
-    db: DbSession,
-    current_user: CurrentUser,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
-    expense = (
-        db.query(Expense)
-        .filter(
-            Expense.id == expense_id,
-            Expense.user_id == current_user.id,
-        )
-        .first()
-    )
-
-    if expense is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Expense not found",
-        )
-
-    db.delete(expense)
-    db.commit()
+    """Delete an expense."""
+    expense_service.delete_user_expense(db, current_user, expense_id)
