@@ -1,14 +1,22 @@
-
-
 services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - DATABASE_URL=postgresql+psycopg2://moon:moon123@db:5432/learning_db
+      - LOG_LEVEL=${LOG_LEVEL}
+    depends_on:
+      db:
+        condition: service_healthy
+
   db:
     image: postgres:16
     environment:
       POSTGRES_USER: moon
       POSTGRES_PASSWORD: moon123
       POSTGRES_DB: learning_db
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -16,16 +24,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-
-  api:
-    build: .
-    environment:
-      DATABASE_URL: postgresql://moon:moon123@db:5432/learning_db
-    ports:
-      - "8000:8000"
-    depends_on:
-      db:
-        condition: service_healthy
 
 volumes:
   postgres_data:
