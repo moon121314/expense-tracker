@@ -13,4 +13,4 @@ python-multipart
 pytest
 pytest-cov
 httpx
-ruff
+ruff==0.16.10
