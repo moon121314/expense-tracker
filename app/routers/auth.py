@@ -1,5 +1,4 @@
-"""Authentication endpoints."""
-
+import logging
 from typing import Annotated
 
 from fastapi import APIRouter, Depends
@@ -10,6 +9,7 @@ from app.database import get_db
 from app.schemas.user import Token, UserCreate, UserResponse
 from app.services import auth_service
 
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 DbSession = Annotated[Session, Depends(get_db)]
@@ -18,6 +18,7 @@ DbSession = Annotated[Session, Depends(get_db)]
 @router.post("/register", response_model=UserResponse, status_code=201)
 def register(user_in: UserCreate, db: DbSession):
     """Register a new user."""
+    logger.info("Registration attempt: %s", user_in.email)
     return auth_service.register_user(db, user_in)
 
 
@@ -27,6 +28,7 @@ def login(
     db: DbSession,
 ):
     """Authenticate and return a JWT."""
+    logger.info("Login attempt: %s", form_data.username)
     user = auth_service.authenticate_user(db, form_data.username, form_data.password)
     token = auth_service.create_token_for_user(user)
     return {"access_token": token, "token_type": "bearer"}
